@@ -1,0 +1,68 @@
+package com.logmaster.api.model;
+
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+@Entity
+@Table(name = "deliveries")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class Delivery{
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "supplier_id", nullable = false)
+    private Supplier supplier;
+
+    @NotNull(message = "Delivery date is required")
+    @Column(name = "delivery_date", nullable = false)
+    private LocalDate deliveryDate;
+
+    @Column(name = "category_low_max", nullable = false)
+    @Builder.Default
+    private int categoryLowMax = 23;
+
+    @Column(name = "category_mid_max", nullable = false)
+    @Builder.Default
+    private int categoryMidMax = 30;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    @Builder.Default
+    private DeliveryStatus status = DeliveryStatus.DRAFT;
+
+    @Column(columnDefinition = "TEXT")
+    private String notes;
+
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
+    @OneToMany(mappedBy = "delivery", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<LogEntry> logEntries = new ArrayList<>();
+
+    @OneToMany(mappedBy = "delivery", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<PriceConfig> priceConfigs = new ArrayList<>();
+}
+
+
