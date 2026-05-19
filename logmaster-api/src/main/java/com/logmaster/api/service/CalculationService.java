@@ -5,10 +5,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.EnumMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class CalculationService {
@@ -52,7 +49,7 @@ public class CalculationService {
     }
     public Map<String, Object> buildSummary(Delivery delivery) {
         List<LogEntry> entries = delivery.getLogEntries();
-        List<PriceConfig> prices = delivery.getPriceConfigs();
+        Collection<PriceConfig> prices = delivery.getPriceConfigs();
 
         int lowMax = delivery.getCategoryLowMax();
         int midMax = delivery.getCategoryMidMax();
