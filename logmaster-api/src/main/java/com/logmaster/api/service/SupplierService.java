@@ -1,5 +1,6 @@
 package com.logmaster.api.service;
 
+import com.logmaster.api.exception.ResourceNotFoundException;
 import com.logmaster.api.model.Supplier;
 import com.logmaster.api.repo.SupplierRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +20,7 @@ public class SupplierService {
 
     public Supplier getById(Long id){
         return supplierRepository.findById(id)
-                .orElseThrow(()-> new RuntimeException ("supplier not found: "+ id));
+                .orElseThrow(()-> new ResourceNotFoundException("supplier not found: "+ id));
     }
     public List<Supplier> search(String name) {
         return supplierRepository.findByNameContainingIgnoreCaseOrderByNameAsc(name);

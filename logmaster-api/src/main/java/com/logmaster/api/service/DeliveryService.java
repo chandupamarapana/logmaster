@@ -1,5 +1,6 @@
 package com.logmaster.api.service;
 
+import com.logmaster.api.exception.ResourceNotFoundException;
 import com.logmaster.api.model.*;
 import com.logmaster.api.repo.DeliveryRepository;
 import com.logmaster.api.repo.LogEntryRepository;
@@ -51,7 +52,7 @@ public class DeliveryService {
 
     public Delivery getById(Long id) {
         return deliveryRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Delivery not found: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Delivery not found: " + id));
     }
 
     @Transactional(readOnly = true)

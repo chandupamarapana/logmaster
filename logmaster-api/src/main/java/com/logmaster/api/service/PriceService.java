@@ -1,5 +1,6 @@
 package com.logmaster.api.service;
 
+import com.logmaster.api.exception.ResourceNotFoundException;
 import com.logmaster.api.model.Delivery;
 import com.logmaster.api.model.DeliveryStatus;
 import com.logmaster.api.model.PriceConfig;
@@ -21,7 +22,7 @@ public class PriceService {
     @Transactional
     public List<PriceConfig> setPrices(Long deliveryId, List<PriceConfig> prices) {
         Delivery delivery = deliveryRepository.findById(deliveryId)
-                .orElseThrow(() -> new RuntimeException("Delivery not found: " + deliveryId));
+                .orElseThrow(() -> new ResourceNotFoundException("Delivery not found: " + deliveryId));
 
         for (PriceConfig price : prices) {
             PriceConfig existing = priceConfigRepository

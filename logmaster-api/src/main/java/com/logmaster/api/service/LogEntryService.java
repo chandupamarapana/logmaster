@@ -1,5 +1,6 @@
 package com.logmaster.api.service;
 
+import com.logmaster.api.exception.ResourceNotFoundException;
 import com.logmaster.api.model.Delivery;
 import com.logmaster.api.model.LogEntry;
 import com.logmaster.api.model.LogType;
@@ -25,7 +26,7 @@ public class LogEntryService {
     @Transactional
     public LogEntry addEntry(Long deliveryId, LogType logType, BigDecimal circumference) {
         Delivery delivery = deliveryRepository.findById(deliveryId)
-                .orElseThrow(() -> new RuntimeException("Delivery not found: " + deliveryId));
+                .orElseThrow(() -> new ResourceNotFoundException("Delivery not found: " + deliveryId));
 
         int order = logEntryRepository.countByDeliveryIdAndLogType(deliveryId, logType);
 
