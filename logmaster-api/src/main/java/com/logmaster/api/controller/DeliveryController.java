@@ -3,8 +3,11 @@ package com.logmaster.api.controller;
 import com.logmaster.api.model.*;
 import com.logmaster.api.service.DeliveryService;
 import com.logmaster.api.service.LogEntryService;
+import com.logmaster.api.service.PdfService;
 import com.logmaster.api.service.PriceService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +23,7 @@ public class DeliveryController {
     private final DeliveryService deliveryService;
     private final LogEntryService logEntryService;
     private final PriceService priceService;
+    private final PdfService pdfService;
     @PostMapping
     public ResponseEntity<Delivery> create(@RequestBody Map<String, Object> body) {
         Long supplierId = Long.valueOf(body.get("supplierId").toString());
@@ -96,6 +100,27 @@ public class DeliveryController {
     @GetMapping("/{id}/prices")
     public ResponseEntity<List<PriceConfig>> getPrices(@PathVariable Long id) {
         return ResponseEntity.ok(priceService.getPrices(id));
+    }
+    @GetMapping("/{id}/report")
+    public ResponseEntity<byte[]> generateReport(@PathVariable Long id) {
+        Map<String, Object> summary = deliveryService.getSummary(id);
+        List<LogEntry> entries = logEntryService.getByDelivery(id);
+        List<PriceConfig> prices = priceService.getPrices(id);
+
+        // Build a simple delivery object with supplier name from summary
+        Delivery delivery = deliveryService.getById(id);
+
+        byte[] pdf = pdfService.generateReport(summary, delivery, entries);
+
+        String filename = "LogMaster_" +
+                summary.get("supplierName").toString().replace(" ", "_") +
+                "_" + summary.get("deliveryDate").toString() + ".pdf";
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION,
+                        "attachment; filename=\"" + filename + "\"")
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(pdf);
     }
 
 
