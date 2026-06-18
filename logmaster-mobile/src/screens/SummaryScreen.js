@@ -9,6 +9,9 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { getSummary } from "../services/deliveryService";
+import * as FileSystem from "expo-file-system";
+import * as Sharing from "expo-sharing";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const LOG_TYPE_LABELS = {
   RUBBER_4FT: "4ft Rubber",
@@ -27,6 +30,7 @@ export default function SummaryScreen({ route, navigation }) {
   const { deliveryId } = route.params;
   const [summary, setSummary] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [downloading, setDownloading] = useState(false);
 
   useEffect(() => {
     loadSummary();
@@ -40,6 +44,29 @@ export default function SummaryScreen({ route, navigation }) {
       Alert.alert("Error", "Failed to load summary");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleDownloadPDF = async () => {
+    setDownloading(true);
+    try {
+      const token = await AsyncStorage.getItem("token");
+      const url = `http://192.168.1.12:8080/api/v1/deliveries/${deliveryId}/report`;
+      const fileUri =
+        FileSystem.documentDirectory + `LogMaster_${deliveryId}.pdf`;
+
+      const downloadResult = await FileSystem.downloadAsync(url, fileUri, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      await Sharing.shareAsync(downloadResult.uri, {
+        mimeType: "application/pdf",
+        dialogTitle: "LogMaster Report",
+      });
+    } catch (error) {
+      Alert.alert("Error", "Failed to download PDF");
+    } finally {
+      setDownloading(false);
     }
   };
 
@@ -83,7 +110,6 @@ export default function SummaryScreen({ route, navigation }) {
         <View key={type} style={styles.typeCard}>
           <Text style={styles.typeTitle}>{LOG_TYPE_LABELS[type] || type}</Text>
 
-          {/* Category rows */}
           <View style={styles.tableHeader}>
             <Text style={styles.col1}>Category</Text>
             <Text style={styles.col2}>Logs</Text>
@@ -104,7 +130,6 @@ export default function SummaryScreen({ route, navigation }) {
             </View>
           ))}
 
-          {/* Type subtotal */}
           <View style={styles.subtotalRow}>
             <Text style={styles.col1}>Subtotal</Text>
             <Text style={styles.col2}>{typeData.totalLogs}</Text>
@@ -139,6 +164,19 @@ export default function SummaryScreen({ route, navigation }) {
         </View>
       </View>
 
+      {/* Download PDF Button */}
+      <TouchableOpacity
+        style={styles.downloadBtn}
+        onPress={handleDownloadPDF}
+        disabled={downloading}
+      >
+        {downloading ? (
+          <ActivityIndicator color="#fff" />
+        ) : (
+          <Text style={styles.downloadBtnText}>📄 Download PDF Invoice</Text>
+        )}
+      </TouchableOpacity>
+
       {/* New Delivery Button */}
       <TouchableOpacity
         style={styles.newDeliveryBtn}
@@ -152,11 +190,7 @@ export default function SummaryScreen({ route, navigation }) {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#f5f5f5", padding: 16 },
-  centered: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
+  centered: { flex: 1, justifyContent: "center", alignItems: "center" },
   loadingText: { marginTop: 12, color: "#666" },
   headerCard: {
     backgroundColor: "#2E7D32",
@@ -192,10 +226,7 @@ const styles = StyleSheet.create({
     borderBottomColor: "#eee",
     paddingBottom: 4,
   },
-  tableRow: {
-    flexDirection: "row",
-    paddingVertical: 4,
-  },
+  tableRow: { flexDirection: "row", paddingVertical: 4 },
   subtotalRow: {
     flexDirection: "row",
     paddingVertical: 6,
@@ -224,27 +255,23 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   grandTotalLabel: { fontSize: 14, color: "#c8e6c9" },
-  grandTotalValue: {
-    fontSize: 14,
-    color: "#fff",
-    fontWeight: "600",
-  },
+  grandTotalValue: { fontSize: 14, color: "#fff", fontWeight: "600" },
   totalAmountRow: {
     borderTopWidth: 1,
     borderTopColor: "#388E3C",
     paddingTop: 10,
     marginTop: 4,
   },
-  totalAmountLabel: {
-    fontSize: 16,
-    color: "#fff",
-    fontWeight: "bold",
+  totalAmountLabel: { fontSize: 16, color: "#fff", fontWeight: "bold" },
+  totalAmountValue: { fontSize: 18, color: "#69F0AE", fontWeight: "bold" },
+  downloadBtn: {
+    backgroundColor: "#1565C0",
+    padding: 16,
+    borderRadius: 8,
+    alignItems: "center",
+    marginBottom: 12,
   },
-  totalAmountValue: {
-    fontSize: 18,
-    color: "#69F0AE",
-    fontWeight: "bold",
-  },
+  downloadBtnText: { color: "#fff", fontSize: 15, fontWeight: "bold" },
   newDeliveryBtn: {
     backgroundColor: "#2E7D32",
     padding: 16,
@@ -252,9 +279,5 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 30,
   },
-  newDeliveryText: {
-    color: "#fff",
-    fontSize: 15,
-    fontWeight: "bold",
-  },
+  newDeliveryText: { color: "#fff", fontSize: 15, fontWeight: "bold" },
 });
