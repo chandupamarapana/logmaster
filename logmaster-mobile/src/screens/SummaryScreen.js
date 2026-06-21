@@ -9,7 +9,7 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { getSummary } from "../services/deliveryService";
-import * as FileSystem from "expo-file-system";
+import * as FileSystem from "expo-file-system/legacy";
 import * as Sharing from "expo-sharing";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -51,20 +51,34 @@ export default function SummaryScreen({ route, navigation }) {
     setDownloading(true);
     try {
       const token = await AsyncStorage.getItem("token");
+      console.log("Token:", token ? "exists" : "missing");
+
       const url = `http://192.168.1.12:8080/api/v1/deliveries/${deliveryId}/report`;
+      console.log("URL:", url);
+
       const fileUri =
         FileSystem.documentDirectory + `LogMaster_${deliveryId}.pdf`;
+      console.log("File URI:", fileUri);
 
       const downloadResult = await FileSystem.downloadAsync(url, fileUri, {
         headers: { Authorization: `Bearer ${token}` },
       });
+
+      console.log("Download status:", downloadResult.status);
+      console.log("Download URI:", downloadResult.uri);
+
+      if (downloadResult.status !== 200) {
+        Alert.alert("Error", `Server returned ${downloadResult.status}`);
+        return;
+      }
 
       await Sharing.shareAsync(downloadResult.uri, {
         mimeType: "application/pdf",
         dialogTitle: "LogMaster Report",
       });
     } catch (error) {
-      Alert.alert("Error", "Failed to download PDF");
+      console.log("PDF Error:", error.message);
+      Alert.alert("Error", error.message);
     } finally {
       setDownloading(false);
     }
