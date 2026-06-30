@@ -43,7 +43,7 @@ public class DeliveryService {
     }
 
     public List<Delivery> getAll() {
-        return deliveryRepository.findAll();
+        return deliveryRepository.findAllWithSupplier();
     }
 
     public List<Delivery> getBySupplierId(Long supplierId) {
@@ -77,4 +77,5 @@ public class DeliveryService {
         delivery.setStatus(status);
         return deliveryRepository.save(delivery);
     }
+
 }

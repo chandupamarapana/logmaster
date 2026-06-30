@@ -1,5 +1,6 @@
 package com.logmaster.api.controller;
 
+import com.logmaster.api.dto.DeliveryResponse;
 import com.logmaster.api.model.*;
 import com.logmaster.api.service.DeliveryService;
 import com.logmaster.api.service.LogEntryService;
@@ -39,12 +40,17 @@ public class DeliveryController {
                 .body(deliveryService.create(supplierId, deliveryDate, lowMax, midMax, notes));
     }
     @GetMapping
-    public ResponseEntity<List<Delivery>> getAll(
+    public ResponseEntity<List<DeliveryResponse>> getAll(
             @RequestParam(required = false) Long supplierId) {
-        if (supplierId != null) {
-            return ResponseEntity.ok(deliveryService.getBySupplierId(supplierId));
-        }
-        return ResponseEntity.ok(deliveryService.getAll());
+        List<Delivery> deliveries = supplierId != null
+                ? deliveryService.getBySupplierId(supplierId)
+                : deliveryService.getAll();
+
+        List<DeliveryResponse> response = deliveries.stream()
+                .map(DeliveryResponse::new)
+                .toList();
+
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}")

@@ -21,5 +21,11 @@ public interface DeliveryRepository extends JpaRepository<Delivery, Long> {
     WHERE d.id = :id
 """)
     Optional<Delivery> findByIdWithDetails(Long id);
+    @Query("""
+    SELECT d FROM Delivery d
+    LEFT JOIN FETCH d.supplier
+    ORDER BY d.deliveryDate DESC
+""")
+    List<Delivery> findAllWithSupplier();
 }
 
