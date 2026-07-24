@@ -30,7 +30,7 @@ export default function DashboardPage() {
   };
 
   const filteredDeliveries = deliveries.filter((d) =>
-    d.supplier?.name?.toLowerCase().includes(searchTerm.toLowerCase())
+    d.supplierName?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -64,7 +64,7 @@ export default function DashboardPage() {
               style={styles.card}
               onClick={() => navigate(`/delivery/${delivery.id}`)}
             >
-              <h3 style={styles.cardTitle}>{delivery.supplier?.name}</h3>
+              <h3 style={styles.cardTitle}>{delivery.supplierName}</h3>
               <p style={styles.cardDate}>{delivery.deliveryDate}</p>
               <span style={getStatusStyle(delivery.status)}>
                 {delivery.status}

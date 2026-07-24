@@ -3,7 +3,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // const BASE_URL = 'http://10.0.2.2:8080/api/v1';
 // 10.0.2.2 is the Android emulator's way of reaching localhost
-const BASE_URL = "http://192.168.1.12:8080/api/v1";
+export const BASE_URL = "http://192.168.1.12:8080/api/v1";
 // Change to your Railway URL when deployed
 
 const api = axios.create({

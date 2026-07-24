@@ -10,17 +10,23 @@ import java.util.Optional;
 
 public interface DeliveryRepository extends JpaRepository<Delivery, Long> {
 
-    List<Delivery> findBySupplierId(Long supplierId);
     List<Delivery> findByStatus(DeliveryStatus status);
 
     @Query("""
-    SELECT DISTINCT d FROM Delivery d
+    SELECT d FROM Delivery d
     LEFT JOIN FETCH d.supplier
-    LEFT JOIN FETCH d.logEntries
-    LEFT JOIN FETCH d.priceConfigs
     WHERE d.id = :id
 """)
-    Optional<Delivery> findByIdWithDetails(Long id);
+    Optional<Delivery> findByIdWithSupplier(Long id);
+
+    @Query("""
+    SELECT d FROM Delivery d
+    LEFT JOIN FETCH d.supplier
+    WHERE d.supplier.id = :supplierId
+    ORDER BY d.deliveryDate DESC
+""")
+    List<Delivery> findBySupplierIdWithSupplier(Long supplierId);
+
     @Query("""
     SELECT d FROM Delivery d
     LEFT JOIN FETCH d.supplier

@@ -47,11 +47,11 @@ public class DeliveryService {
     }
 
     public List<Delivery> getBySupplierId(Long supplierId) {
-        return deliveryRepository.findBySupplierId(supplierId);
+        return deliveryRepository.findBySupplierIdWithSupplier(supplierId);
     }
 
     public Delivery getById(Long id) {
-        return deliveryRepository.findById(id)
+        return deliveryRepository.findByIdWithSupplier(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Delivery not found: " + id));
     }
 

@@ -26,7 +26,7 @@ public class DeliveryController {
     private final PriceService priceService;
     private final PdfService pdfService;
     @PostMapping
-    public ResponseEntity<Delivery> create(@RequestBody Map<String, Object> body) {
+    public ResponseEntity<DeliveryResponse> create(@RequestBody Map<String, Object> body) {
         Long supplierId = Long.valueOf(body.get("supplierId").toString());
         LocalDate deliveryDate = LocalDate.parse(body.get("deliveryDate").toString());
         Integer lowMax = body.containsKey("categoryLowMax") ?
@@ -36,8 +36,8 @@ public class DeliveryController {
         String notes = body.containsKey("notes") ?
                 body.get("notes").toString() : null;
 
-        return ResponseEntity.status(201)
-                .body(deliveryService.create(supplierId, deliveryDate, lowMax, midMax, notes));
+        Delivery delivery = deliveryService.create(supplierId, deliveryDate, lowMax, midMax, notes);
+        return ResponseEntity.status(201).body(new DeliveryResponse(delivery));
     }
     @GetMapping
     public ResponseEntity<List<DeliveryResponse>> getAll(
@@ -54,8 +54,8 @@ public class DeliveryController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Delivery> getById(@PathVariable Long id) {
-        return ResponseEntity.ok(deliveryService.getById(id));
+    public ResponseEntity<DeliveryResponse> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(new DeliveryResponse(deliveryService.getById(id)));
     }
 
     @GetMapping("/{id}/summary")
@@ -64,11 +64,12 @@ public class DeliveryController {
     }
 
     @PatchMapping("/{id}/status")
-    public ResponseEntity<Delivery> updateStatus(
+    public ResponseEntity<DeliveryResponse> updateStatus(
             @PathVariable Long id,
             @RequestBody Map<String, String> body) {
         DeliveryStatus status = DeliveryStatus.valueOf(body.get("status"));
-        return ResponseEntity.ok(deliveryService.updateStatus(id, status));
+        Delivery delivery = deliveryService.updateStatus(id, status);
+        return ResponseEntity.ok(new DeliveryResponse(delivery));
     }
     // ── LOG ENTRIES ───────────────────────────────────────────
 

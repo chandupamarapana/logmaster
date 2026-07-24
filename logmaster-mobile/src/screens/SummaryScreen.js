@@ -9,6 +9,7 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { getSummary } from "../services/deliveryService";
+import { BASE_URL } from "../services/api";
 import * as FileSystem from "expo-file-system/legacy";
 import * as Sharing from "expo-sharing";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -53,7 +54,7 @@ export default function SummaryScreen({ route, navigation }) {
       const token = await AsyncStorage.getItem("token");
       console.log("Token:", token ? "exists" : "missing");
 
-      const url = `http://192.168.1.12:8080/api/v1/deliveries/${deliveryId}/report`;
+      const url = `${BASE_URL}/deliveries/${deliveryId}/report`;
       console.log("URL:", url);
 
       const fileUri =
