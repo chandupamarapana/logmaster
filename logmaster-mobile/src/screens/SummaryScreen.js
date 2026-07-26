@@ -52,31 +52,35 @@ export default function SummaryScreen({ route, navigation }) {
     setDownloading(true);
     try {
       const token = await AsyncStorage.getItem("token");
-      console.log("Token:", token ? "exists" : "missing");
+      const url = `https://logmaster-production.up.railway.app/api/v1/deliveries/${deliveryId}/report`;
 
-      const url = `${BASE_URL}/deliveries/${deliveryId}/report`;
-      console.log("URL:", url);
-
-      const fileUri =
-        FileSystem.documentDirectory + `LogMaster_${deliveryId}.pdf`;
-      console.log("File URI:", fileUri);
-
-      const downloadResult = await FileSystem.downloadAsync(url, fileUri, {
+      const response = await fetch(url, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      console.log("Download status:", downloadResult.status);
-      console.log("Download URI:", downloadResult.uri);
-
-      if (downloadResult.status !== 200) {
-        Alert.alert("Error", `Server returned ${downloadResult.status}`);
-        return;
+      if (!response.ok) {
+        throw new Error(`Server returned ${response.status}`);
       }
 
-      await Sharing.shareAsync(downloadResult.uri, {
-        mimeType: "application/pdf",
-        dialogTitle: "LogMaster Report",
-      });
+      const blob = await response.blob();
+      const reader = new FileReader();
+
+      reader.onload = async () => {
+        const base64data = reader.result.split(",")[1];
+        const fileUri =
+          FileSystem.documentDirectory + `LogMaster_${deliveryId}.pdf`;
+
+        await FileSystem.writeAsStringAsync(fileUri, base64data, {
+          encoding: FileSystem.EncodingType.Base64,
+        });
+
+        await Sharing.shareAsync(fileUri, {
+          mimeType: "application/pdf",
+          dialogTitle: "LogMaster Report",
+        });
+      };
+
+      reader.readAsDataURL(blob);
     } catch (error) {
       console.log("PDF Error:", error.message);
       Alert.alert("Error", error.message);
