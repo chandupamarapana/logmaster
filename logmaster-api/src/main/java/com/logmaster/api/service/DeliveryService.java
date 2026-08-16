@@ -33,8 +33,8 @@ public class DeliveryService {
         Delivery delivery = Delivery.builder()
                 .supplier(supplier)
                 .deliveryDate(deliveryDate)
-                .categoryLowMax(categoryLowMax != null ? categoryLowMax : 23)
-                .categoryMidMax(categoryMidMax != null ? categoryMidMax : 30)
+                .categoryLowMax(categoryLowMax != null ? categoryLowMax : 24)
+                .categoryMidMax(categoryMidMax != null ? categoryMidMax : 29)
                 .notes(notes)
                 .status(DeliveryStatus.DRAFT)
                 .build();

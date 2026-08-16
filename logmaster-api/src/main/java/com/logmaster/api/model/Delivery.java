@@ -38,11 +38,11 @@ public class Delivery{
 
     @Column(name = "category_low_max", nullable = false)
     @Builder.Default
-    private int categoryLowMax = 23;
+    private int categoryLowMax = 24;
 
     @Column(name = "category_mid_max", nullable = false)
     @Builder.Default
-    private int categoryMidMax = 30;
+    private int categoryMidMax = 29;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

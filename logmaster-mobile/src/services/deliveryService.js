@@ -13,8 +13,8 @@ export const searchSuppliers = async (name) => {
 export const createDelivery = async (
   supplierId,
   deliveryDate,
-  categoryLowMax = 23,
-  categoryMidMax = 30
+  categoryLowMax = 24,
+  categoryMidMax = 29
 ) => {
   const response = await api.post("/deliveries", {
     supplierId,
