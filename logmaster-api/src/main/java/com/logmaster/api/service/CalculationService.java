@@ -120,7 +120,7 @@ public class CalculationService {
                 if (catAcc.logCount == 0) continue;
                 Map<String, Object> catMap = new LinkedHashMap<>();
                 catMap.put("logCount", catAcc.logCount);
-                catMap.put("totalCft", catAcc.totalCft.setScale(4, RoundingMode.HALF_UP));
+                catMap.put("totalCft", catAcc.totalCft.setScale(2, RoundingMode.HALF_UP));
                 catMap.put("pricePerCft", catAcc.pricePerCft);
                 catMap.put("totalPrice", catAcc.totalPrice.setScale(2, RoundingMode.HALF_UP));
                 categories.put(cat.name(), catMap);
@@ -128,7 +128,7 @@ public class CalculationService {
 
             Map<String, Object> typeMap = new LinkedHashMap<>();
             typeMap.put("totalLogs", acc.totalLogs);
-            typeMap.put("totalCft", acc.totalCft.setScale(4, RoundingMode.HALF_UP));
+            typeMap.put("totalCft", acc.totalCft.setScale(2, RoundingMode.HALF_UP));
             typeMap.put("totalPrice", acc.totalPrice.setScale(2, RoundingMode.HALF_UP));
             typeMap.put("categories", categories);
             byType.put(type.name(), typeMap);
@@ -141,7 +141,7 @@ public class CalculationService {
         result.put("categoryThresholds", Map.of("lowMax", lowMax, "midMax", midMax));
         result.put("byType", byType);
         result.put("grandTotalLogs", grandTotalLogs);
-        result.put("grandTotalCft", grandTotalCft.setScale(4, RoundingMode.HALF_UP));
+        result.put("grandTotalCft", grandTotalCft.setScale(2, RoundingMode.HALF_UP));
         result.put("grandTotalPrice", grandTotalPrice.setScale(2, RoundingMode.HALF_UP));
         return result;
     }

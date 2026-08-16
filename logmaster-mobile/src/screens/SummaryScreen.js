@@ -141,7 +141,7 @@ export default function SummaryScreen({ route, navigation }) {
               <Text style={styles.col1}>{CATEGORY_LABELS[cat] || cat}</Text>
               <Text style={styles.col2}>{catData.logCount}</Text>
               <Text style={styles.col2}>
-                {parseFloat(catData.totalCft).toFixed(3)}
+                {parseFloat(catData.totalCft).toFixed(2)}
               </Text>
               <Text style={styles.col2}>
                 {parseFloat(catData.totalPrice).toFixed(2)}
@@ -153,7 +153,7 @@ export default function SummaryScreen({ route, navigation }) {
             <Text style={styles.col1}>Subtotal</Text>
             <Text style={styles.col2}>{typeData.totalLogs}</Text>
             <Text style={styles.col2}>
-              {parseFloat(typeData.totalCft).toFixed(3)}
+              {parseFloat(typeData.totalCft).toFixed(2)}
             </Text>
             <Text style={styles.col2}>
               {parseFloat(typeData.totalPrice).toFixed(2)}
@@ -172,7 +172,7 @@ export default function SummaryScreen({ route, navigation }) {
         <View style={styles.grandTotalRow}>
           <Text style={styles.grandTotalLabel}>Total Cft</Text>
           <Text style={styles.grandTotalValue}>
-            {parseFloat(summary.grandTotalCft).toFixed(4)}
+            {parseFloat(summary.grandTotalCft).toFixed(2)}
           </Text>
         </View>
         <View style={[styles.grandTotalRow, styles.totalAmountRow]}>

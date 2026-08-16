@@ -86,7 +86,7 @@ export default function DeliveryDetailPage() {
                   <td style={styles.td}>{CATEGORY_LABELS[cat] || cat}</td>
                   <td style={styles.td}>{catData.logCount}</td>
                   <td style={styles.td}>
-                    {parseFloat(catData.totalCft).toFixed(4)}
+                    {parseFloat(catData.totalCft).toFixed(2)}
                   </td>
                   <td style={styles.td}>
                     {catData.pricePerCft
@@ -106,7 +106,7 @@ export default function DeliveryDetailPage() {
                   <b>{typeData.totalLogs}</b>
                 </td>
                 <td style={styles.td}>
-                  <b>{parseFloat(typeData.totalCft).toFixed(4)}</b>
+                  <b>{parseFloat(typeData.totalCft).toFixed(2)}</b>
                 </td>
                 <td style={styles.td}></td>
                 <td style={styles.td}>
@@ -126,7 +126,7 @@ export default function DeliveryDetailPage() {
         </div>
         <div style={styles.grandRow}>
           <span>Total Cft</span>
-          <span>{parseFloat(summary.grandTotalCft).toFixed(4)}</span>
+          <span>{parseFloat(summary.grandTotalCft).toFixed(2)}</span>
         </div>
         <div style={styles.totalAmountRow}>
           <span>Total Amount</span>

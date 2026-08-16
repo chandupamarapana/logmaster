@@ -114,7 +114,7 @@ public class PdfService {
 
                     addCell(t, CAT_LABELS.getOrDefault(catEntry.getKey(), catEntry.getKey()));
                     addCell(t, catData.get("logCount").toString());
-                    addCell(t, formatNum(catData.get("totalCft"), 4));
+                    addCell(t, formatNum(catData.get("totalCft"), 2));
                     addCell(t, catData.get("pricePerCft") != null
                             ? formatNum(catData.get("pricePerCft"), 2) : "—");
                     addCell(t, formatNum(catData.get("totalPrice"), 2));
@@ -123,7 +123,7 @@ public class PdfService {
                 // Subtotal
                 addSubtotalCell(t, "Subtotal");
                 addSubtotalCell(t, typeData.get("totalLogs").toString());
-                addSubtotalCell(t, formatNum(typeData.get("totalCft"), 4));
+                addSubtotalCell(t, formatNum(typeData.get("totalCft"), 2));
                 addSubtotalCell(t, "");
                 addSubtotalCell(t, formatNum(typeData.get("totalPrice"), 2));
 
@@ -138,7 +138,7 @@ public class PdfService {
 
             addGrandCell(grand, "GRAND TOTAL");
             addGrandCell(grand, summary.get("grandTotalLogs").toString() + " logs");
-            addGrandCell(grand, formatNum(summary.get("grandTotalCft"), 4) + " Cft");
+            addGrandCell(grand, formatNum(summary.get("grandTotalCft"), 2) + " Cft");
             addGrandCell(grand, "");
             addGrandCell(grand, "LKR " + formatNum(summary.get("grandTotalPrice"), 2));
 
