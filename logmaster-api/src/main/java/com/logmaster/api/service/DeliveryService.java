@@ -1,5 +1,6 @@
 package com.logmaster.api.service;
 
+import com.logmaster.api.config.SecurityUtil;
 import com.logmaster.api.exception.ResourceNotFoundException;
 import com.logmaster.api.model.*;
 import com.logmaster.api.repo.DeliveryRepository;
@@ -23,12 +24,24 @@ public class DeliveryService {
     private final CalculationService calculationService;
     private final LogEntryRepository logEntryRepository;
     private final PriceConfigRepository priceConfigRepository;
+    private final SecurityUtil securityUtil;
+
+    public List<Delivery> getAll() {
+        Long companyId = securityUtil.getCurrentCompanyId();
+        return deliveryRepository.findAllByCompanyId(companyId);
+    }
 
     public Delivery create(Long supplierId, LocalDate deliveryDate,
                            Integer categoryLowMax, Integer categoryMidMax, String notes) {
 
+        Long companyId = securityUtil.getCurrentCompanyId();
+
         Supplier supplier = supplierRepository.findById(supplierId)
-                .orElseThrow(() -> new RuntimeException("Supplier not found: " + supplierId));
+                .orElseThrow(() -> new ResourceNotFoundException("Supplier not found: " + supplierId));
+
+        if (!supplier.getCompany().getId().equals(companyId)) {
+            throw new ResourceNotFoundException("Supplier not found: " + supplierId);
+        }
 
         Delivery delivery = Delivery.builder()
                 .supplier(supplier)
@@ -42,9 +55,6 @@ public class DeliveryService {
         return deliveryRepository.save(delivery);
     }
 
-    public List<Delivery> getAll() {
-        return deliveryRepository.findAllWithSupplier();
-    }
 
     public List<Delivery> getBySupplierId(Long supplierId) {
         return deliveryRepository.findBySupplierIdWithSupplier(supplierId);

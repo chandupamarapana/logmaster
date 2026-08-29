@@ -4,6 +4,7 @@ import com.logmaster.api.model.Delivery;
 import com.logmaster.api.model.DeliveryStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
@@ -33,5 +34,13 @@ public interface DeliveryRepository extends JpaRepository<Delivery, Long> {
     ORDER BY d.deliveryDate DESC
 """)
     List<Delivery> findAllWithSupplier();
+    @Query("""
+    SELECT d FROM Delivery d
+    LEFT JOIN FETCH d.supplier s
+    WHERE s.company.id = :companyId
+    ORDER BY d.deliveryDate DESC
+""")
+    List<Delivery> findAllByCompanyId(@Param("companyId") Long companyId);
 }
+
 

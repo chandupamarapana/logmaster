@@ -18,10 +18,11 @@ public class JwtUtil {
         return Keys.hmacShaKeyFor(SECRET.getBytes());
     }
 
-    public String generateToken(String username, String role) {
+    public String generateToken(String username, String role, Long companyId) {
         return Jwts.builder()
                 .subject(username)
                 .claim("role", role)
+                .claim("company", companyId)
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + EXPIRATION_MS))
                 .signWith(getSigningKey())
@@ -51,5 +52,8 @@ public class JwtUtil {
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
+    }
+    public long extractCompanyId(String token){
+        return getClaims(token).get("companyId", Long.class);
     }
 }

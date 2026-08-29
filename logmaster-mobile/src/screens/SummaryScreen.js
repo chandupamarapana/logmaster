@@ -52,7 +52,7 @@ export default function SummaryScreen({ route, navigation }) {
     setDownloading(true);
     try {
       const token = await AsyncStorage.getItem("token");
-      const url = `https://logmaster-production.up.railway.app/api/v1/deliveries/${deliveryId}/report`;
+      const url = `https://logmaster-5tzm.onrender.com/api/v1/deliveries/${deliveryId}/report`;
 
       const response = await fetch(url, {
         headers: { Authorization: `Bearer ${token}` },

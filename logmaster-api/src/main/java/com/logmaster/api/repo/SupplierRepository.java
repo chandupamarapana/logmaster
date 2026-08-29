@@ -8,4 +8,5 @@ import java.util.List;
 public interface SupplierRepository extends JpaRepository<Supplier, Long> {
 
     List<Supplier> findByNameContainingIgnoreCaseOrderByNameAsc (String name);
+    List<Supplier> findByCompanyId(Long companyId);
 }
